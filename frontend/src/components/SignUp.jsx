@@ -5,7 +5,7 @@ import axios from "axios"
 
 
 
-const API_URL = "http://localhost:4000"
+const API_URL = "https://taskmanager-backend-sgm9.onrender.com"
 const INITIAL_FORM = {name: "", email: "",password: ""}
 
 const SignUp = ({ onSwitchMode }) => {
