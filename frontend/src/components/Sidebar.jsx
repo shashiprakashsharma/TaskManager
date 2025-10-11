@@ -2,15 +2,17 @@ import React, { useEffect, useState } from "react";
 import { LINK_CLASSES, menuItems,PRODUCTIVITY_CARD, SIDEBAR_CLASSES, TIP_CARD } from "../assets/dummy";
 import { Lightbulb, Menu, Sparkles,X } from "lucide-react";
 import {NavLink} from "react-router-dom";
+import { calculateTaskStats } from "../utils/taskUtils";
+import DSAComponent from "./DSAComponent";
 
 
 const Sidebar = ({user, tasks}) => {
 
     const [mobileOpen, setmobileOpen] = useState(false)
     const [showModel, setshowModel] = useState(false)
-    const totalTasks = tasks?.length || 0
-    const completedTasks = tasks?.filter((t)=> t.completed).length || 0
-    const productivity = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0
+	
+	// Use shared utility for consistent calculation
+	const { completionPercentage: productivity } = calculateTaskStats(tasks)
 
     const username = user?.name || "User"
     const initial = username.charAt(0).toUpperCase()
@@ -78,6 +80,11 @@ const Sidebar = ({user, tasks}) => {
 
                 </div>
                 {renderMenuItems()}
+
+                {/* DSA Component */}
+                <div className="mt-6">
+                    <DSAComponent />
+                </div>
 
                 <div className=" mt-auto pt-6 lg:block hidden">
                     <div className={TIP_CARD.container}>
