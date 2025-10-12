@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Zap, Settings, ChevronDown, LogOut } from "lucide-react";
+import ThemeToggle from "./ThemeToggle";
 
 const Navbar = ({ user = {}, onLogout }) => {
     const menuref = useRef(null)
@@ -26,7 +27,7 @@ const Navbar = ({ user = {}, onLogout }) => {
   }
 
   return (
-    <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm border-b border-gray-200 font-sans">
+    <header className="sticky top-0 z-50 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md shadow-sm border-b border-gray-200 dark:border-gray-700 font-sans">
       <div className="flex items-center justify-between px-4 py-3 md:px-6 max-w-7xl mx-auto">
         {/* LOGO */}
         <div
@@ -45,8 +46,9 @@ const Navbar = ({ user = {}, onLogout }) => {
 
         {/* RIGHT SIDE */}
         <div className="flex items-center gap-4">
+          <ThemeToggle />
           <button
-            className="p-2 text-gray-600 hover:text-purple-500 transition-colors duration-300 hover:bg-purple-50 rounded-full"
+            className="p-2 text-gray-600 dark:text-gray-300 hover:text-purple-500 transition-colors duration-300 hover:bg-purple-50 dark:hover:bg-purple-900/50 rounded-full"
             onClick={() => navigate("/profile")}
           >
             <Settings className="w-5 h-5" />
@@ -55,7 +57,7 @@ const Navbar = ({ user = {}, onLogout }) => {
           <div ref={menuref} className="relative">
             <button
               onClick={handleMenuToggle}
-              className="flex items-center gap-2 px-3 py-2 rounded-full cursor-pointer hover:bg-purple-50 transition-colors duration-300 border border-transparent hover:border-purple-200"
+              className="flex items-center gap-2 px-3 py-2 rounded-full cursor-pointer hover:bg-purple-50 dark:hover:bg-purple-900/50 transition-colors duration-300 border border-transparent hover:border-purple-200 dark:hover:border-purple-700"
             >
               <div className="relative">
                 {user.avatar ? (
@@ -72,34 +74,34 @@ const Navbar = ({ user = {}, onLogout }) => {
                 <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 rounded-full border-2 border-white animate-pulse"></div>
               </div>
               <div className="text-left hidden md:block">
-                <p className="text-sm font-medium text-gray-800">
+                <p className="text-sm font-medium text-gray-800 dark:text-gray-200">
                   {user.name}
                 </p>
-                <p className="text-xs text-gray-500 font-normal">
+                <p className="text-xs text-gray-500 dark:text-gray-400 font-normal">
                   {user.email}
                 </p>
               </div>
               <ChevronDown
-                className={`w-4 h-4 text-gray-500 transition-transform duration-300 ${
+                className={`w-4 h-4 text-gray-500 dark:text-gray-400 transition-transform duration-300 ${
                   menuOpen ? "rotate-180" : ""
                 }`}
               />
             </button>
             {menuOpen && (
-                <ul className=" absolute top-14 right-0 w-56 bg-white rounded-2xl shadow-xl border border-purple-100 z-50 overflow-hidden animate-fadeIn">
+                <ul className=" absolute top-14 right-0 w-56 bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-purple-100 dark:border-gray-700 z-50 overflow-hidden animate-fadeIn">
 
                     <li className=" p-2">
                         <button onClick={() => {
                             setMenuOpen(false)
                             navigate('/profile')
                         }}
-                         className=" w-full px-4 py-2.5 text-left hover:bg-purple-50 text-sm text-gray-700 transition-colors flex item-center gap-2 group" role="menuitem">
-                            <Settings className=" w-4 h-4 text-gray-700" />
+                         className=" w-full px-4 py-2.5 text-left hover:bg-purple-50 dark:hover:bg-purple-900/50 text-sm text-gray-700 dark:text-gray-300 transition-colors flex item-center gap-2 group" role="menuitem">
+                            <Settings className=" w-4 h-4 text-gray-700 dark:text-gray-300" />
                             Profile Setting
                         </button>
                     </li>
                     <li className=" p-2">
-                        <button onClick={handleLogout} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm hover:bg-red-50 text-red-600">
+                        <button onClick={handleLogout} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm hover:bg-red-50 dark:hover:bg-red-900/50 text-red-600 dark:text-red-400">
                             <LogOut className=" w-4 h-4"/>
                             LogOut
                         </button>

@@ -1,9 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
+import ThemeToggle from "./ThemeToggle";
 import { Outlet } from "react-router-dom";
 import axios from "axios";
 import { Circle, Clock, TrendingUp, Zap } from "lucide-react";
+import { calculateTaskStats } from "../utils/taskUtils";
+import Loader from "./Loader";
 
 const Layout = ({ onLogout, user }) => {
   const [tasks, setTasks] = useState([]);
@@ -19,7 +22,7 @@ const Layout = ({ onLogout, user }) => {
       const token = localStorage.getItem("token");
       if (!token) throw new Error("No auth token found");
 
-      const { data } = await axios.get("https://taskmanager-backend-sgm9.onrender.com/api/task/gp", {
+      const { data } = await axios.get("http://localhost:4000/api/task/gp", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -42,32 +45,19 @@ const Layout = ({ onLogout, user }) => {
     fetchTask();
   }, [fetchTask]);
 
-  // Compute stats
+  // Compute stats using shared utility for consistency
   const state = useMemo(() => {
-    const completedTasks = tasks.filter(
-      (t) =>
-        t.completed === true ||
-        t.completed === 1 ||
-        (typeof t.completed === "string" &&
-          t.completed.toLowerCase() === "yes")
-    ).length;
-
-    const totalCount = tasks.length;
-    const pendingCount = totalCount - completedTasks;
-    const completionPercentage = totalCount
-      ? Math.round((completedTasks / totalCount) * 100)
-      : 0;
-
+    const stats = calculateTaskStats(tasks);
     return {
-      totalCount,
-      completedTasks,
-      pendingCount,
-      completionPercentage,
+      totalCount: stats.totalTasks,
+      completedTasks: stats.completedTasks,
+      pendingCount: stats.pendingTasks,
+      completionPercentage: stats.completionPercentage,
     };
   }, [tasks]);
 
   const StatCard = ({ title, value, icon }) => (
-    <div className="p-2 sm:p-3 rounded-xl bg-white shadow-sm border border-purple-100 hover:shadow-md transition-all duration-300 hover:border-purple-100 group">
+    <div className="p-2 sm:p-3 rounded-xl bg-white dark:bg-gray-800 shadow-sm border border-purple-100 dark:border-gray-700 hover:shadow-md transition-all duration-300 hover:border-purple-100 dark:hover:border-gray-600 group">
       <div className="flex items-center gap-2">
         <div className="p-1.5 rounded-lg bg-gradient-to-br from-fuchsia-500/10 to-purple-500/10 group-hover:from-fuchsia-500/20 group-hover:to-purple-500/20">
           {icon}
@@ -76,7 +66,7 @@ const Layout = ({ onLogout, user }) => {
           <p className="text-lg sm:text-xl font-bold bg-gradient-to-r from-fuchsia-500 to-purple-600 bg-clip-text text-transparent">
             {value}
           </p>
-          <p className="text-xs text-gray-500 font-medium">{title}</p>
+          <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">{title}</p>
         </div>
       </div>
     </div>
@@ -84,11 +74,7 @@ const Layout = ({ onLogout, user }) => {
 
   // SHOW LOADING
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 p-6 flex items-center justify-center">
-        <p className="text-gray-600 text-lg font-medium">Loading tasks...</p>
-      </div>
-    );
+    return <Loader message="Loading your tasks..." />;
   }
 
   // SHOW ERROR
@@ -111,9 +97,9 @@ const Layout = ({ onLogout, user }) => {
 
   // MAIN LAYOUT
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <Navbar user={user} onLogout={onLogout} />
-      <Sidebar user={user} task={tasks} />
+      <Sidebar user={user} tasks={tasks} />
 
       <div className="ml-0 xl:ml-64 lg:ml-64 md:ml-16 pt-16 p-3 sm:p-4 md:p-4 transition-all duration-300">
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
@@ -125,8 +111,8 @@ const Layout = ({ onLogout, user }) => {
           {/* Sidebar Right Panel */}
           <div className="xl:col-span-1 space-y-4 sm:space-y-6">
             {/* Task Statistics */}
-            <div className="bg-white rounded-xl p-4 sm:p-5 shadow-sm border border-purple-100">
-              <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-gray-800 flex items-center gap-2">
+            <div className="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-5 shadow-sm border border-purple-100 dark:border-gray-700">
+              <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-gray-800 dark:text-gray-200 flex items-center gap-2">
                 <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-purple-500" />
                 Task Statistics
               </h3>
@@ -163,14 +149,14 @@ const Layout = ({ onLogout, user }) => {
                     <Circle className="w-2.5 h-2.5 sm:h-3 text-purple-500 fill-purple-500" />
                     Task Progress
                   </span>
-                  <span className="text-xs bg-purple-100 text-purple-700 px-1.5 py-0.5 sm:px-2 rounded-full">
+                  <span className="text-xs bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 px-1.5 py-0.5 sm:px-2 rounded-full">
                     {state.completedTasks}/{state.totalCount}
                   </span>
                 </div>
 
                 <div className="relative pt-1">
                   <div className="flex gap-1.5 items-center">
-                    <div className="flex-1 h-2 sm:h-3 bg-purple-100 rounded-full overflow-hidden">
+                    <div className="flex-1 h-2 sm:h-3 bg-purple-100 dark:bg-purple-900/50 rounded-full overflow-hidden">
                       <div
                         className="h-full bg-gradient-to-r from-fuchsia-500 to-purple-600 transition-all duration-500"
                         style={{ width: `${state.completionPercentage}%` }}
@@ -182,8 +168,8 @@ const Layout = ({ onLogout, user }) => {
             </div>
 
             {/* Recent Activity */}
-            <div className="bg-white rounded-xl p-4 sm:p-5 shadow-sm border border-purple-100">
-              <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-gray-800 flex items-center gap-2">
+            <div className="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-5 shadow-sm border border-purple-100 dark:border-gray-700">
+              <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-gray-800 dark:text-gray-200 flex items-center gap-2">
                 <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-purple-500" />
                 Recent Activity
               </h3>
@@ -192,13 +178,13 @@ const Layout = ({ onLogout, user }) => {
                 {tasks.slice(0, 3).map((task) => (
                   <div
                     key={task._id}
-                    className="flex items-center justify-between p-2 sm:p-3 hover:bg-purple-50/50 rounded-lg transition-colors duration-200 border border-transparent hover:border-purple-100"
+                    className="flex items-center justify-between p-2 sm:p-3 hover:bg-purple-50/50 dark:hover:bg-gray-700/50 rounded-lg transition-colors duration-200 border border-transparent hover:border-purple-100 dark:hover:border-gray-600"
                   >
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-700 break-words whitespace-normal">
+                      <p className="text-sm font-medium text-gray-700 dark:text-gray-300 break-words whitespace-normal">
                         {task.title}
                       </p>
-                      <p className="text-xs text-gray-500 mt-0.5">
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
                         {task.createdAt
                           ? new Date(task.createdAt).toLocaleDateString()
                           : "No date"}

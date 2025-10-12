@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { getPriorityBadgeColor, getPriorityColor, MENU_OPTIONS, TI_CLASSES } from "../assets/dummy";
-import { Calendar, CheckCircle, CheckCircle2, MoreVertical,Clock } from "lucide-react";
+import { Calendar, CheckCircle, CheckCircle2, MoreVertical,Clock, FileText } from "lucide-react";
 import axios from "axios";
 import {isToday, format} from "date-fns"
 import TaskModel from "./TaskModel";
+import { useNavigate } from "react-router-dom";
 
 
-const API_BASE = "https://taskmanager-backend-sgm9.onrender.com/api/task"
+const API_BASE = "http://localhost:4000/api/task"
 const TaskItem = ({task,onRefresh, onLogout, showCompleteCheckbox = true }) => {
-
+    const navigate = useNavigate();
     const [showMenu, setShowMenu]= useState(false)
     const [isCompleted, setIsCompleted] = useState(
         [true, 1, 'yes'].includes(
@@ -51,6 +52,15 @@ const TaskItem = ({task,onRefresh, onLogout, showCompleteCheckbox = true }) => {
         setShowMenu(false)
         if(action === "edit") setShowEditModel(true)
         if(action === "delete") handleDelete()
+        if(action === "note") navigate(`/note/${task._id}`)
+    }
+
+    const handleTaskClick = (e) => {
+        // Don't navigate if clicking on interactive elements
+        if (e.target.closest('button') || e.target.closest('a')) {
+            return;
+        }
+        navigate(`/note/${task._id}`);
     }
 
     const handleDelete = async () => {
@@ -79,7 +89,10 @@ const TaskItem = ({task,onRefresh, onLogout, showCompleteCheckbox = true }) => {
 
     return(
         <>
-        <div className={`${TI_CLASSES.wrapper} ${borderColor}`}>
+        <div 
+            className={`${TI_CLASSES.wrapper} ${borderColor} cursor-pointer hover:shadow-md transition-all duration-200`}
+            onClick={handleTaskClick}
+        >
             <div className={TI_CLASSES.leftContainer}>
                 {showCompleteCheckbox && (
                     <button onClick={handleComplete}

@@ -5,9 +5,12 @@ import {
     SortDesc, SortAsc, Award,
     Edit2,
     Trash2,
+    FileText,
     MoreVertical,
     Clock,
     Calendar,
+    Kanban,
+    Timer,
 } from "lucide-react"
 
 // BACKEND TEST 
@@ -96,21 +99,23 @@ export const securityFields = [
 // SIDEBAR 
 export const menuItems = [
     { text: "Dashboard", path: "/", icon: <Home className="w-5 h-5" /> },
+    { text: "Kanban Board", path: "/kanban", icon: <Kanban className="w-5 h-5" /> },
+    { text: "Time Tracker", path: "/time-tracker", icon: <Timer className="w-5 h-5" /> },
     { text: "Pending Tasks", path: "/pending", icon: <ListChecks className="w-5 h-5" /> },
     { text: "Completed Tasks", path: "/complete", icon: <CheckCircle2 className="w-5 h-5" /> },
 ]
 
 export const SIDEBAR_CLASSES = {
-    desktop: "hidden md:flex flex-col fixed h-full w-20 lg:w-64 bg-white/90 backdrop-blur-sm border-r border-purple-100 shadow-sm z-20 transition-all duration-300",
+    desktop: "hidden md:flex flex-col fixed h-full w-20 lg:w-64 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm border-r border-purple-100 dark:border-gray-700 shadow-sm z-20 transition-all duration-300",
     mobileButton: "absolute md:hidden top-25 left-5 z-50 bg-purple-600 text-white p-2 rounded-full shadow-lg hover:bg-purple-700 transition",
     mobileDrawerBackdrop: "fixed inset-0 bg-black/40 backdrop-blur-sm",
-    mobileDrawer: "absolute top-0 left-0 w-64 h-full bg-white/90 backdrop-blur-md border-r border-purple-100 shadow-lg z-50 p-4 flex flex-col space-y-6",
+    mobileDrawer: "absolute top-0 left-0 w-64 h-full bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-r border-purple-100 dark:border-gray-700 shadow-lg z-50 p-4 flex flex-col space-y-6",
 }
 
 export const LINK_CLASSES = {
     base: "group flex items-center px-4 py-3 rounded-xl transition-all duration-300",
-    active: "bg-gradient-to-r from-purple-50 to-fuchsia-50 border-l-4 border-purple-500 text-purple-700 font-medium shadow-sm",
-    inactive: "hover:bg-purple-50/50 text-gray-600 hover:text-purple-700",
+    active: "bg-gradient-to-r from-purple-50 to-fuchsia-50 dark:from-purple-900/50 dark:to-fuchsia-900/50 border-l-4 border-purple-500 text-purple-700 dark:text-purple-300 font-medium shadow-sm",
+    inactive: "hover:bg-purple-50/50 dark:hover:bg-purple-900/50 text-gray-600 dark:text-gray-400 hover:text-purple-700 dark:hover:text-purple-300",
     icon: "transition-transform duration-300 group-hover:scale-110 text-purple-500",
     text: "text-sm font-medium ml-2",
 }
@@ -264,6 +269,7 @@ export const layoutClasses = {
 // Menu options for task actions
 export const MENU_OPTIONS = [
     { action: "edit", label: "Edit Task", icon: <Edit2 size={14} className="text-purple-600" /> },
+    { action: "note", label: "Add Note", icon: <FileText size={14} className="text-blue-600" /> },
     { action: "delete", label: "Delete Task", icon: <Trash2 size={14} className="text-red-600" /> },
 ]
 

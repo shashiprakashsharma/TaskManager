@@ -7,7 +7,7 @@ import TaskItem from '../components/TaskItem'
 import TaskModel from '../components/TaskModel';
 import axios from 'axios'; 
 
-const API_BASE = "https://taskmanager-backend-sgm9.onrender.com/api/tasks"
+const API_BASE = "http://localhost:4000/api/tasks"
 
 const Dashboard = () => {
 
